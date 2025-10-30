@@ -77,4 +77,4 @@ To update or move the project:
 ### 📌 Notes
 
 - Wake-on-LAN may not work on all PCs depending on BIOS/network card settings
-- Future features: device monitoring, Wake-on-LAN logs
+- Future features: Wake-on-LAN logs
