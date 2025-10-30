@@ -12,7 +12,7 @@ Automate Wake-on-LAN in your Linux homelab, remotely power on network devices ef
 **WakeOnWeb** is a Node.js app to **wake up computers remotely via Wake-on-LAN** through a web interface.  
 It also provides a **systemd service** to run automatically as a daemon on Linux.
 
-![](https://imgur.com/a/wakeonweb-aS3r1oJ)
+![](https://i.imgur.com/CUqoxzv.png)
 
 ---
 
