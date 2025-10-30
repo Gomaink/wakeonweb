@@ -8,7 +8,13 @@ app.use(express.json());
 app.use(express.static("src/web"));
 
 const DEVICES_FILE = "src/devices.json";
+const LOG_DIR = "logs";
+const LOG_FILE = `${LOG_DIR}/wol.log`;
 
+// Ensure logs directory exists
+if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR);
+
+// --- Load devices ---
 function loadDevices() {
   try {
     if (!fs.existsSync(DEVICES_FILE)) {
@@ -33,7 +39,7 @@ function loadDevices() {
 
 let devices = loadDevices();
 
-// --- Funções WOL ---
+// --- WOL functions ---
 function normalizeMac(mac) {
   return mac.replace(/[^a-fA-F0-9]/g, "").toUpperCase();
 }
@@ -89,7 +95,21 @@ async function sendMagicPacketDynamic(mac, port = 9) {
   socket.close();
 }
 
-// --- Rotas ---
+// --- Logging WOL ---
+function formatTimestamp(date) {
+  const pad = n => n.toString().padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ` +
+         `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+function logWOL(device, success) {
+  const timestamp = formatTimestamp(new Date());
+  const line = `${timestamp} - ${device.name} (${device.mac}) - ${success ? "SUCCESS" : "FAIL"}\n`;
+  fs.appendFileSync(LOG_FILE, line);
+}
+
+
+// --- Routes ---
 app.get("/api/devices", (_, res) => res.json(devices));
 
 app.post("/api/wake/:id", async (req, res) => {
@@ -98,8 +118,10 @@ app.post("/api/wake/:id", async (req, res) => {
 
   try {
     await sendMagicPacketDynamic(device.mac);
+    logWOL(device, true);
     res.send(`Magic Packet sent to ${device.name} via interface ${device.mac}`);
   } catch (err) {
+    logWOL(device, false);
     console.error("Error sending WOL:", err);
     res.status(500).send("Error sending Magic Packet");
   }
@@ -123,6 +145,13 @@ app.delete("/api/devices/:id", (req, res) => {
   devices.splice(index, 1);
   fs.writeFileSync(DEVICES_FILE, JSON.stringify(devices, null, 2));
   res.sendStatus(204);
+});
+
+// Optional: get WOL logs
+app.get("/api/logs", (_, res) => {
+  if (!fs.existsSync(LOG_FILE)) return res.json([]);
+  const logs = fs.readFileSync(LOG_FILE, "utf-8").split("\n").filter(Boolean);
+  res.json(logs);
 });
 
 // --- Server ---

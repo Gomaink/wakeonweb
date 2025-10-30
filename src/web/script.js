@@ -1,3 +1,4 @@
+// --- Load Devices and Status ---
 async function loadDevices() {
   const res = await fetch("/api/devices");
   const devices = await res.json();
@@ -6,7 +7,7 @@ async function loadDevices() {
   tbody.innerHTML = "";
 
   if (devices.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">Nenhum dispositivo adicionado ainda.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">No devices added yet.</td></tr>`;
     return;
   }
 
@@ -25,19 +26,23 @@ async function loadDevices() {
   });
 }
 
+// --- Wake Device ---
 async function wakeDevice(id) {
   const res = await fetch(`/api/wake/${id}`, { method: "POST" });
   const text = await res.text();
   alert(text);
   loadDevices();
+  loadLogs();
 }
 
+// --- Remove Device ---
 async function removeDevice(id) {
-  if (!confirm("Tem certeza que deseja remover este dispositivo?")) return;
+  if (!confirm("Are you sure you want to remove this device?")) return;
   await fetch(`/api/devices/${id}`, { method: "DELETE" });
   loadDevices();
 }
 
+// --- Add Device Form ---
 document.getElementById("addForm").addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -55,4 +60,33 @@ document.getElementById("addForm").addEventListener("submit", async e => {
   loadDevices();
 });
 
+// --- Load WOL Logs ---
+async function loadLogs() {
+  const res = await fetch("/api/logs");
+  const logs = await res.json();
+
+  const tbody = document.getElementById("logs");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  if (logs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="1" class="text-center text-muted">No WOL logs yet.</td></tr>`;
+    return;
+  }
+
+  logs.forEach(log => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${log}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+
 loadDevices();
+loadLogs();
+
+setInterval(() => {
+  loadDevices();
+  loadLogs();
+}, 15000);
