@@ -18,7 +18,7 @@ async function loadDevices() {
       <td>${device.ip || "-"}</td>
       <td>
         <button class="btn btn-success btn-sm me-2" onclick="wakeDevice(${device.id})">Wake</button>
-        <button class="btn btn-danger btn-sm" onclick="removeDevice(${device.id})">Remove</button>
+        <button class="btn btn-danger btn-sm" onclick="showRemoveModal(${device.id})">Remove</button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -35,11 +35,27 @@ async function wakeDevice(id) {
 }
 
 // --- Remove Device ---
-async function removeDevice(id) {
-  if (!confirm("Are you sure you want to remove this device?")) return;
-  await fetch(`/api/devices/${id}`, { method: "DELETE" });
-  loadDevices();
+let deviceToRemove = null;
+
+function showRemoveModal(id) {
+  deviceToRemove = id;
+  const modalEl = document.getElementById("removeModal");
+  const bsModal = new bootstrap.Modal(modalEl);
+  bsModal.show();
 }
+
+document.getElementById("confirmRemove").addEventListener("click", async () => {
+  if (!deviceToRemove) return;
+
+  await fetch(`/api/devices/${deviceToRemove}`, { method: "DELETE" });
+  deviceToRemove = null;
+
+  const modalEl = document.getElementById("removeModal");
+  const bsModal = bootstrap.Modal.getInstance(modalEl);
+  bsModal.hide();
+
+  loadDevices();
+});
 
 // --- Add Device Form ---
 document.getElementById("addForm").addEventListener("submit", async e => {

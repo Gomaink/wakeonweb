@@ -17,7 +17,7 @@ body {
 #toastContainer {
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* garante que os toasts fiquem à direita */
+  align-items: flex-end;
   gap: 0.5rem;
 }
 
@@ -127,4 +127,30 @@ body {
 .dark .table thead,
 .dark .table tr {
   background-color: #333 !important;
+}
+.dark .modal-content {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: none;
+}
+
+.dark .modal-header,
+.dark .modal-body,
+.dark .modal-footer {
+  border-color: #333;
+}
+
+.dark .btn-secondary {
+  background-color: #444;
+  border: none;
+  color: #e0e0e0;
+}
+
+.dark .btn-secondary:hover {
+  background-color: #555;
+}
+
+.dark .btn-danger {
+  background-color: #dc3545;
+  border: none;
 }
