@@ -14,6 +14,14 @@ body {
   z-index: 1;
 }
 
+#toastContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* garante que os toasts fiquem à direita */
+  gap: 0.5rem;
+}
+
+
 .card {
   border-radius: 1rem;
 }

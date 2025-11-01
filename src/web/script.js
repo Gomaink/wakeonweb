@@ -29,7 +29,7 @@ async function loadDevices() {
 async function wakeDevice(id) {
   const res = await fetch(`/api/wake/${id}`, { method: "POST" });
   const text = await res.text();
-  alert(text);
+  showToast(text, "success");
   loadDevices();
   loadLogs();
 }
@@ -72,7 +72,7 @@ async function loadLogs() {
     return;
   }
 
-  logs.forEach(log => {
+  logs.reverse().forEach(log => {
     const [timestampRaw, device, status] = log.split(" - ");
     const date = new Date(timestampRaw);
     const formattedTime = date.toLocaleString();
@@ -109,6 +109,40 @@ themeToggle.addEventListener("click", () => {
 
 const savedTheme = localStorage.getItem("theme") || "light";
 setTheme(savedTheme);
+
+// --- Toast ---
+function showToast(message, type = "info") {
+  const toastContainer = document.getElementById("toastContainer");
+
+  const toast = document.createElement("div");
+  toast.className = "toast align-items-center text-white border-0"; // string correta
+  toast.role = "alert";
+  toast.ariaLive = "assertive";
+  toast.ariaAtomic = "true";
+
+  let bg = "#6c757d"; // default gray
+  if (type === "success") bg = "#198754";
+  if (type === "error") bg = "#dc3545";
+  if (type === "warning") bg = "#ffc107";
+
+  toast.style.backgroundColor = bg;
+
+  toast.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">${message}</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  `;
+
+  toastContainer.appendChild(toast);
+
+  const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+  bsToast.show();
+
+  toast.addEventListener("hidden.bs.toast", () => toast.remove());
+}
+
+
 
 // --- Initial Load ---
 loadDevices();
