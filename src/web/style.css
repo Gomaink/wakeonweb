@@ -1,0 +1,122 @@
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logs-table-wrapper {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.logs-table-wrapper thead th {
+  position: sticky;
+  top: 0;
+  background-color: inherit;
+  z-index: 1;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+.table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: scale(1.03);
+}
+
+@media (max-width: 768px) {
+  #devicesTable td:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  #devicesTable .btn {
+    width: 100%;
+    padding: 0.6rem 0;
+    font-size: 0.9rem;
+  }
+}
+
+
+/* --- Dark Theme --- */
+.dark {
+  background-color: #121212 !important;
+  color: #e0e0e0 !important;
+}
+
+.dark .navbar-brand {
+    color: #ffffff !important;
+}
+
+.dark .card {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+.dark .navbar {
+  background-color: #1a1a1a !important;
+}
+
+.dark .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #2a2a2a !important;
+}
+
+.dark .table-striped > tbody > tr:nth-of-type(even) {
+  background-color: #1e1e1e !important;
+}
+
+.dark .btn-outline-secondary {
+  color: #e0e0e0;
+  border-color: #555;
+}
+
+.dark .btn-outline-secondary:hover {
+  background-color: #333;
+}
+
+.dark .btn-primary {
+  background-color: #83aac0;
+  border: none;
+}
+
+.dark input.form-control {
+  background-color: #2b2b2b !important;
+  color: #ffffff !important;
+  border: 1px solid #444 !important;
+}
+
+.dark input.form-control::placeholder {
+  color: #cccccc !important;
+}
+
+.dark .table {
+  color: #ffffff !important;
+  background-color: #1c1c1c !important;
+}
+
+.dark .table th {
+  color: #cccccc !important;
+  background-color: #2b2b2b !important;
+}
+
+.dark .table td {
+  color: #e6e6e6 !important;
+  border-color: #333 !important;
+}
+
+.dark .table tbody,
+.dark .table td,
+.dark .table tfoot,
+.dark .table th,
+.dark .table thead,
+.dark .table tr {
+  background-color: #333 !important;
+}

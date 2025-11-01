@@ -1,13 +1,12 @@
-// --- Load Devices and Status ---
+// --- Load Devices ---
 async function loadDevices() {
   const res = await fetch("/api/devices");
   const devices = await res.json();
-
   const tbody = document.getElementById("devices");
   tbody.innerHTML = "";
 
   if (devices.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">No devices added yet.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">No devices added yet.</td></tr>`;
     return;
   }
 
@@ -64,28 +63,56 @@ document.getElementById("addForm").addEventListener("submit", async e => {
 async function loadLogs() {
   const res = await fetch("/api/logs");
   const logs = await res.json();
-
   const tbody = document.getElementById("logs");
   if (!tbody) return;
-
   tbody.innerHTML = "";
 
   if (logs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="1" class="text-center text-muted">No WOL logs yet.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted">No WOL logs yet.</td></tr>`;
     return;
   }
 
   logs.forEach(log => {
+    const [timestampRaw, device, status] = log.split(" - ");
+    const date = new Date(timestampRaw);
+    const formattedTime = date.toLocaleString();
+
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${log}</td>`;
+    tr.innerHTML = `
+      <td>${formattedTime}</td>
+      <td>${device || "-"}</td>
+      <td>${status || "-"}</td>
+    `;
     tbody.appendChild(tr);
   });
 }
 
+// --- Theme Toggle ---
+const body = document.getElementById("body");
+const themeToggle = document.getElementById("themeToggle");
 
+function setTheme(theme) {
+  if (theme === "dark") {
+    body.classList.add("dark");
+    themeToggle.innerText = "☀️ Light Mode";
+  } else {
+    body.classList.remove("dark");
+    themeToggle.innerText = "🌙 Dark Mode";
+  }
+  localStorage.setItem("theme", theme);
+}
+
+themeToggle.addEventListener("click", () => {
+  const current = body.classList.contains("dark") ? "dark" : "light";
+  setTheme(current === "dark" ? "light" : "dark");
+});
+
+const savedTheme = localStorage.getItem("theme") || "light";
+setTheme(savedTheme);
+
+// --- Initial Load ---
 loadDevices();
 loadLogs();
-
 setInterval(() => {
   loadDevices();
   loadLogs();
