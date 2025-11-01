@@ -35,7 +35,7 @@ git clone https://github.com/Gomaink/wakeonweb.git
 cd wakeonweb
 ```
 
-### 2️⃣ Clone the repo
+### 2️⃣ Run Install Script
 
 ```bash
 ./install.sh
